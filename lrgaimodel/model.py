@@ -23,11 +23,15 @@ class TransformerBlock(nn.Module):
 class LRGAIModel(nn.Module):
     def __init__(self, embed_size=256, heads=8, layers=6, forward_expansion=4, dropout=0.1):
         super(LRGAIModel, self).__init__()
+        self.embedding = nn.Embedding(30522, embed_size)  # Add embedding layer
         self.layers = nn.ModuleList([
             TransformerBlock(embed_size, heads, dropout, forward_expansion) for _ in range(layers)
         ])
         self.norm = nn.LayerNorm(embed_size)
+
     def forward(self, x, mask):
+        x = self.embedding(x)  # Convert token IDs to embeddings (batch_size, seq_len, embed_size)
         for layer in self.layers:
             x = layer(x, x, x, mask)
         return self.norm(x)
+
