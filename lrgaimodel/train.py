@@ -53,7 +53,7 @@ def train_model(data_path, epochs=5, batch_size=16, learning_rate=0.001, save_in
     print(f"Training complete. Final model saved as {final_model_path}")
 
 if __name__ == "__main__":
-    train_model("data/train.txt")
+    train_model("train.txt")
 
 # run_lrgaimodel.py
 from lrgaimodel import load_model
