@@ -3,12 +3,6 @@ from .tokenizers import Tokenizer
 from .retrieval import Retriever
 from .generation import Generator
 
-# Lazy loading variables
-_model = None
-_tokenizer = None
-_retriever = None
-_generator = None
-
 def load_model():
     global _model, _tokenizer, _retriever, _generator
     if _model is None:
