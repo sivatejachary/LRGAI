@@ -17,8 +17,11 @@ class TextDataset(Dataset):
     def __getitem__(self, idx):
         text = self.lines[idx].strip()
         tokenized_text = self.tokenizer.encode(text)
-        if len(tokenized_text) > self.max_length:
-            tokenized_text = tokenized_text[:self.max_length]
+        
+        # Ensure tokenized text has the correct sequence length
+        if len(tokenized_text) < self.max_length:
+            tokenized_text += [0] * (self.max_length - len(tokenized_text))  # Padding
+        
         return torch.tensor(tokenized_text, dtype=torch.long)
 
 def train_model(data_path, epochs=5, batch_size=16, learning_rate=0.001, save_interval=4):
@@ -34,6 +37,8 @@ def train_model(data_path, epochs=5, batch_size=16, learning_rate=0.001, save_in
         total_loss = 0
         for batch_idx, batch in enumerate(dataloader):
             batch = batch.to(torch.long)
+            batch = batch.view(batch.shape[0], -1)
+            print(f"Batch {batch_idx} shape after reshape: {batch.shape}")
             optimizer.zero_grad()
             outputs = model(batch, mask=None)
             loss = criterion(outputs.view(-1, outputs.shape[-1]), batch.view(-1))
@@ -53,7 +58,7 @@ def train_model(data_path, epochs=5, batch_size=16, learning_rate=0.001, save_in
     print(f"Training complete. Final model saved as {final_model_path}")
 
 if __name__ == "__main__":
-    train_model("train.txt")
+    train_model("data/train.txt")
 
 # run_lrgaimodel.py
 from lrgaimodel import load_model
