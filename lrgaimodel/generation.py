@@ -13,7 +13,6 @@ class Generator:
     def __init__(self, model, retriever):
         self.model = model
         self.retriever = retriever
-    
     def generate(self, input_tensor, mask):
         with torch.no_grad():
             logits = self.model(input_tensor, mask)
